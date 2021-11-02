@@ -1,3 +1,4 @@
+const { sendEmail } = require("../modules/email");
 const Validations = require("../modules/validations");
 
 module.exports = class UserController {
@@ -10,7 +11,10 @@ module.exports = class UserController {
 				user_password: data.password,
 			});
 
-			console.log(user);
+			await sendEmail(
+				`Please click to link: http://localhost/users/verify/${user.dataValues.user_id}`,
+				data.email
+			);
 
 			res.status(201).json({
 				ok: true,
