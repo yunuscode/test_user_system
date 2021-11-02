@@ -1,4 +1,5 @@
 const { sendEmail } = require("../modules/email");
+const { createToken } = require("../modules/jwt");
 const Validations = require("../modules/validations");
 
 module.exports = class UserController {
@@ -24,6 +25,47 @@ module.exports = class UserController {
 			res.status(400).json({
 				ok: false,
 				message: e + "",
+			});
+		}
+	}
+	static async UserVerifyAccountByLinkController(req, res, next) {
+		try {
+			const user_id = req.params.verify_id;
+
+			const user = await req.db.users.findOne({
+				where: {
+					user_id,
+				},
+			});
+
+			if (!user) throw new Error("User not found");
+
+			await req.db.users.update(
+				{
+					user_is_verified: true,
+				},
+				{
+					where: {
+						user_id,
+					},
+				}
+			);
+
+			const token = createToken({
+				user_id,
+			});
+
+			res.json({
+				ok: true,
+				message: "Account successfully verificed",
+				data: {
+					token,
+				},
+			});
+		} catch (error) {
+			res.status(400).json({
+				ok: false,
+				message: error + "",
 			});
 		}
 	}
