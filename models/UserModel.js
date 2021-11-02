@@ -14,5 +14,10 @@ module.exports = function (Sequelize, sequelize) {
 			type: Sequelize.STRING,
 			allowNull: false,
 		},
+		user_is_verified: {
+			type: Sequelize.BOOLEAN,
+			allowNull: false,
+			defaultValue: false,
+		},
 	});
 };
